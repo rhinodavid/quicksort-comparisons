@@ -29,11 +29,20 @@ func testEq(a, b []int) bool {
 }
 
 // partition
-func TestPivot(t *testing.T) {
-	nums := []int{3, 5, 7, 1, 4, 2}
-	sorted := partition(nums, 0, len(nums))
+func XTestPivot(t *testing.T) {
+	nums := []int{3, 5, 6, 7, 1, 4, 2}
+	sorted, _ := partition(nums, 0, len(nums))
 	fmt.Println(sorted)
-	if !testEq(sorted, []int{1, 2, 3, 4, 5}) {
+	if !testEq(sorted, []int{1, 2, 3, 4, 5, 6, 7}) {
 		t.Fatalf("Incorrect sorted array")
+	}
+}
+
+func TestCountPartitions(t *testing.T) {
+	nums := []int{3, 2, 1}
+	_, comparisons := partition(nums, 0, len(nums))
+	fmt.Println(comparisons)
+	if comparisons != 3 {
+		t.Fatalf("Incorrect number of comparisons, expected 3, got %d\n", comparisons)
 	}
 }

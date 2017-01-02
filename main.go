@@ -40,10 +40,11 @@ func selectFirstAsPivot(start int, end int) int {
 	return start
 }
 
-func partition(arr []int, start int, end int) []int {
+func partition(arr []int, start int, end int) ([]int, int) {
+	comparisons := (end - start) - 1
 	fmt.Printf("starting with start %d, end %d\n", start, end)
 	if end == start {
-		return arr
+		return arr, comparisons
 	}
 	// select pivot
 	pivot := selectFirstAsPivot(start, end)
@@ -71,14 +72,17 @@ func partition(arr []int, start int, end int) []int {
 	arr[i-1] = arr[pivot]
 	arr[pivot] = tmp
 	fmt.Println(arr)
-	if i-start > 1 {
-		partition(arr, start, i-1)
+	fmt.Println("i", i)
+	if (i-1)-start > 1 {
+		_, comp := partition(arr, start, (i - 1))
+		comparisons += comp
 	}
-	if end-(i+1) > 1 {
-		partition(arr, i, end)
+	if end-i > 1 {
+		_, comp := partition(arr, i, end)
+		comparisons += comp
 	}
 
-	return arr
+	return arr, comparisons
 }
 
 func countQuicksortComparisons(arr []int) (comparisons int) {
