@@ -36,47 +36,65 @@ func readFile(fname string) (nums []int, err error) {
 	return nums, nil
 }
 
-func selectFirstAsPivot(start int, end int) int {
+func selectFirstAsPivot(arr []int, start int, end int) int {
+	// should give: 162085 with numbers.txt set
 	return start
+}
+
+func selectLastAsPivot(arr []int, start int, end int) int {
+	// should give: 164123 with numbers.txt set
+	return end - 1
+}
+
+func selectMedianOfThreeAsPivot(arr []int, start int, end int) int {
+	// should NOT give 159896 or 159894 with numbers.txt set
+	first := arr[start]
+	last := arr[end-1]
+	middle := arr[(end-1-start)/2+start]
+	if (first < middle && first > last) || (first > middle && first < last) {
+		return start
+	}
+	if (middle > first && middle < last) || (middle < first && middle > last) {
+		return (end-1-start)/2 + start
+	}
+	return end - 1
 }
 
 func partition(arr []int, start int, end int) ([]int, int) {
 	comparisons := (end - start) - 1
-	fmt.Printf("starting with start %d, end %d\n", start, end)
 	if end == start {
 		return arr, comparisons
 	}
 	// select pivot
-	pivot := selectFirstAsPivot(start, end)
-
+	pivot := selectMedianOfThreeAsPivot(arr, start, end)
 	pivotValue := arr[pivot]
-	fmt.Println(pivotValue)
+
 	// swap pivot and first
 	tmp := arr[start]
 	arr[start] = arr[pivot]
 	arr[pivot] = tmp
 
-	fmt.Println(arr)
 	i := start + 1
 	for j := start + 1; j < end; j++ {
-		fmt.Println(i)
 		if arr[j] < pivotValue {
 			tmp := arr[i]
 			arr[i] = arr[j]
 			arr[j] = tmp
 			i++
 		}
-		fmt.Println(arr)
 	}
+
+	// put pivot in its correct spot
 	tmp = arr[i-1]
-	arr[i-1] = arr[pivot]
-	arr[pivot] = tmp
-	fmt.Println(arr)
-	fmt.Println("i", i)
+	arr[i-1] = arr[start]
+	arr[start] = tmp
+
+	// recurse on left half if necessary
 	if (i-1)-start > 1 {
 		_, comp := partition(arr, start, (i - 1))
 		comparisons += comp
 	}
+	// recurse on right half if necessary
 	if end-i > 1 {
 		_, comp := partition(arr, i, end)
 		comparisons += comp
@@ -85,20 +103,16 @@ func partition(arr []int, start int, end int) ([]int, int) {
 	return arr, comparisons
 }
 
-func countQuicksortComparisons(arr []int) (comparisons int) {
-	comparisons = 0
-	return comparisons
-}
-
 func main() {
 	flag.Parse()
 	if len(flag.Args()) < 1 {
 		panic("Enter the name of the file with the integer list you'd like to sort and count comparisons.")
 	}
-	_, err := readFile(flag.Args()[0])
+	arr, err := readFile(flag.Args()[0])
 	if err != nil {
 		panic(err)
 	}
-	comparisons := 0
+	_, comparisons := partition(arr, 0, len(arr))
+
 	fmt.Println(comparisons)
 }
