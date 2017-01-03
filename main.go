@@ -37,17 +37,14 @@ func readFile(fname string) (nums []int, err error) {
 }
 
 func selectFirstAsPivot(arr []int, start int, end int) int {
-	// should give: 162085 with numbers.txt set
 	return start
 }
 
 func selectLastAsPivot(arr []int, start int, end int) int {
-	// should give: 164123 with numbers.txt set
 	return end - 1
 }
 
 func selectMedianOfThreeAsPivot(arr []int, start int, end int) int {
-	// should NOT give 159896 or 159894 with numbers.txt set
 	first := arr[start]
 	last := arr[end-1]
 	middle := arr[(end-1-start)/2+start]
